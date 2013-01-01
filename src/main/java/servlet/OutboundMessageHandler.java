@@ -20,7 +20,9 @@ public class OutboundMessageHandler extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
     		throws ServletException, IOException {
     	ServletOutputStream out = resp.getOutputStream();
-        out.write("Salesforce Outbound Message Handler (supports POST only)".getBytes());
+        out.write("Salesforce Outbound Message Handler (supports POST only)\n".getBytes());
+        String pathInfo = "pathInfo: " + req.getPathInfo() + "\n";
+        out.write(pathInfo.getBytes());
         out.flush();
         out.close();
     }
@@ -30,8 +32,8 @@ public class OutboundMessageHandler extends HttpServlet {
     	
     	String body = RequestUtils.getBody(req);
     	OutboundMessage message = new OutboundMessage(body);
-    	message.doProcess();
-    	    	
+    	message.doCallback(req);
+    	 
     	resp.setContentType("text/xml");
     	OutputStreamWriter out = new OutputStreamWriter(resp.getOutputStream());
 		out.write(OutboundMessage.ACK_RESPONSE);

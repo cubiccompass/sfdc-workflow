@@ -9,6 +9,8 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
 public class OutboundMessage {
 	public static String ACK_RESPONSE = 
     		"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
@@ -26,22 +28,20 @@ public class OutboundMessage {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void doProcess(){
+	public void doCallback(HttpServletRequest req){
 		try{
 			String urlParameters = "{\"oid\":\"" + this.getSObjectId() + "\"}";
-			String request = "https://" + this.getRESTInstance() + ".salesforce.com/services/apexrest/workflow/";
+			String request = "https://" + this.getRESTInstance() + ".salesforce.com/services/apexrest/" + req.getPathInfo();
 			System.err.println("POSTing " + urlParameters + " to: " + request);
 			
 			URL url = new URL(request); 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();           
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
-			connection.setInstanceFollowRedirects(false);		
-			connection.setRequestMethod("POST"); 
+			connection.setInstanceFollowRedirects(false);
+			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Authorization", "Bearer " + this.getSessionId());
 			connection.setRequestProperty("Content-Type", "application/json");
-			//connection.setRequestProperty("charset", "utf-8");
-			//connection.setRequestProperty("Content-Length", "" + Integer.toString(urlParameters.getBytes().length));
 			connection.setUseCaches(false);
 			
 			DataOutputStream wr = new DataOutputStream(connection.getOutputStream ());
