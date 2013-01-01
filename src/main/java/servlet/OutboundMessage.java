@@ -31,7 +31,7 @@ public class OutboundMessage {
 	public void doCallback(HttpServletRequest req){
 		try{
 			String urlParameters = "{\"oid\":\"" + this.getSObjectId() + "\"}";
-			String request = "https://" + this.getRESTInstance() + ".salesforce.com/services/apexrest/" + req.getPathInfo();
+			String request = "https://" + this.getRESTInstance() + ".salesforce.com/services/apexrest" + req.getPathInfo();
 			System.err.println("POSTing " + urlParameters + " to: " + request);
 			
 			URL url = new URL(request); 
